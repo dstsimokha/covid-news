@@ -1,9 +1,10 @@
-# TODO: add parallel parsing?
+import csv
 import sys
 import json
 import requests
 from tqdm import tqdm
 from bs4 import BeautifulSoup
+from joblib import Parallel, delayed, parallel_backend
 
 
 class Scraper:
@@ -17,6 +18,7 @@ class Scraper:
         """
         self.site = site
         self.sitemap = f'sitemaps/news_{site}.json'
+        self.fieldnames = ['url', 'time', 'title', 'text']
         with open('settings.json') as f:
             site = json.load(f)[self.site]
             self.css_selectors = site['css']
@@ -29,7 +31,7 @@ class Scraper:
     def _clean_news(self, title, time, text):
         pass
 
-    def _get_news(self, soup):
+    def _get_article(self, soup):
         """
         Removing html tags with get_text()
         Restoring Unicode spaces with replace(u'\xa0', u' ')
@@ -45,29 +47,49 @@ class Scraper:
         # Finally, text
         text = soup.select(self.css_selectors['text'])
         text = ' '.join([i.get_text().replace(u'\xa0', u' ') for i in text])
-        return {'title': title, 'time': time, 'text': text}
+        return {'time': time, 'title': title, 'text': text}
 
-    def _save_news(self, news):
-        with open(f'news/{self.site}.json', 'w+') as f:
-            json.dump(news, f)
+    def _save_article(self, article):
+        with open(f'news/{self.site}.csv', 'a') as f:
+            writer = csv.DictWriter(f, self.fieldnames)
+            writer.writerow(article)
 
-    def parse(self):
-        self._load_urls()
-        news = dict()
-        for url in tqdm(self.urls.values()):
+    def _create_csv(self):
+        try:
+            with open(f'news/{self.site}.csv', 'w', newline='') as f:
+                writer = csv.DictWriter(f, self.fieldnames)
+                writer.writeheader()
+        except FileExistsError:
+            pass
+
+    def _parse(self, url):
+        try:
             r = requests.get(url)
             if r.status_code != 200:
-                continue  # TODO: write logs of errors
+                raise IndexError
+            article = {'url': url}
             soup = BeautifulSoup(r.text, 'html.parser')
-            article = self._get_news(soup)
-            news.update({url: article})
-        self._save_news(news)
+            content = self._get_article(soup)
+            article.update(content)
+            self._save_article(article)
+        except IndexError:
+            pass
+
+    def parallel_parse(self):
+        """
+        For quicker parsing using all CPUs
+        """
+        self._load_urls()
+        self._create_csv()
+        with parallel_backend("loky", n_jobs=-1):
+            with Parallel(verbose=0) as parallel:
+                parallel(delayed(self._parse)(url)
+                         for url in tqdm(self.urls.values()))
 
     def test_parse(self):
         self._load_urls()
         test = list(self.urls.values())[0]  # TODO: change to random element
         r = requests.get(test)
-        r.status_code
         soup = BeautifulSoup(r.text, 'html.parser')
         article = self._get_news(soup)
         self.title = article['title']
@@ -77,4 +99,4 @@ class Scraper:
 
 if __name__ == '__main__':
     news = Scraper(sys.argv[1])
-    news.parse()
+    news.parallel_parse()
