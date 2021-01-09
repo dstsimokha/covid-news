@@ -1,12 +1,8 @@
+import sys
 import json
 import requests
 from tqdm import tqdm
 from bs4 import BeautifulSoup
-
-# TODO: create class(es) with methods for scraping, make universal app
-
-# TODO: add css_selectors & cleaning_tools for each used site to settings.json
-#       and load from there needed tools to functions
 
 
 class Scraper:
@@ -38,17 +34,15 @@ class Scraper:
         Restoring Unicode spaces with replace(u'\xa0', u' ')
         For time block: remove '\n' and get only date
         """
+        # TODO: move all cleaning to _clean_news()
         # Deriving title
         title = soup.select(self.css_selectors['title'])
-        # TODO: MOVE THIS TO _clean_news()
         title = title[0].get_text().replace(u'\xa0', u' ')
         # Then time
         time = soup.select(self.css_selectors['time'])
-        # TODO: MOVE THIS TO _clean_news()
         time = time[0].get_text().replace('\n', '').split(',')[0]
         # Finally, text
         text = soup.select(self.css_selectors['text'])
-        # TODO: MOVE THIS TO _clean_news()
         text = ' '.join([i.get_text().replace(u'\xa0', u' ') for i in text])
         return {'title': title, 'time': time, 'text': text}
 
@@ -79,8 +73,6 @@ class Scraper:
         self.text = article['text']
 
 
-# TODO: make script executable from terminal and sys.args
-
-news = Scraper('5tv')
-# news.test_parse()
-news.parse()
+if __name__ == '__main__':
+    news = Scraper(sys.argv[1])
+    news.parse()
