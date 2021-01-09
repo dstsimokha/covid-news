@@ -1,4 +1,10 @@
 # covid-news
-University project on analysing news media in Russia before COVID-19 and in the pandemic period
+University project on news topic modelling: comparison of pro-governmental an ani-governmental news medias agendas in the pandemic period.
 
-Here will be description on how to (re)use code for scraping and analysing news.
+Main script is **scraper.py**.
+In **settings.json** for each used source CSS selectors and cleaning tools described.
+
+
+meta:   
+- *python venv* = env - only needed packages were loaded  
+- all work was done in Visual Studio Code, internals added too
