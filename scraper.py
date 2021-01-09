@@ -33,9 +33,23 @@ class Scraper:
         pass
 
     def _get_news(self, soup):
+        """
+        Removing html tags with get_text()
+        Restoring Unicode spaces with replace(u'\xa0', u' ')
+        For time block: remove '\n' and get only date
+        """
+        # Deriving title
         title = soup.select(self.css_selectors['title'])
+        # TODO: MOVE THIS TO _clean_news()
+        title = title[0].get_text().replace(u'\xa0', u' ')
+        # Then time
         time = soup.select(self.css_selectors['time'])
+        # TODO: MOVE THIS TO _clean_news()
+        time = time[0].get_text().replace('\n', '').split(',')[0]
+        # Finally, text
         text = soup.select(self.css_selectors['text'])
+        # TODO: MOVE THIS TO _clean_news()
+        text = ' '.join([i.get_text().replace(u'\xa0', u' ') for i in text])
         return {'title': title, 'time': time, 'text': text}
 
     def _save_news(self, news):
@@ -53,8 +67,20 @@ class Scraper:
             news.update({url: article})
         self._save_news(news)
 
+    def test_parse(self):
+        self._load_urls()
+        test = list(self.urls.values())[0]  # TODO: change to random element
+        r = requests.get(test)
+        r.status_code
+        soup = BeautifulSoup(r.text, 'html.parser')
+        article = self._get_news(soup)
+        self.title = article['title']
+        self.time = article['time']
+        self.text = article['text']
+
 
 # TODO: make script executable from terminal and sys.args
 
 news = Scraper('5tv')
+# news.test_parse()
 news.parse()
