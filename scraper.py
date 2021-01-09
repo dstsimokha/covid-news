@@ -1,3 +1,4 @@
+# TODO: add parallel parsing?
 import sys
 import json
 import requests
@@ -55,7 +56,8 @@ class Scraper:
         news = dict()
         for url in tqdm(self.urls.values()):
             r = requests.get(url)
-            r.status_code  # Handling errors here
+            if r.status_code != 200:
+                continue  # TODO: write logs of errors
             soup = BeautifulSoup(r.text, 'html.parser')
             article = self._get_news(soup)
             news.update({url: article})
