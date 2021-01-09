@@ -1,12 +1,10 @@
 {
-    "5tv.ru": {
+    "5tv": {
         "css": {
             "title": ".fsHeader1Alt",
             "time": "time",
             "text": "#article_body p"
         },
-        "clean": {
-            
-        }
+        "clean": {}
     }
 }

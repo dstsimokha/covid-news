@@ -14,13 +14,12 @@ class Scraper:
     Helps to parse news from chosen source
     """
 
-    def __init__(self, site, sitemap_path, css_selectors, cleaning_tools=None):
+    def __init__(self, site):
         """
-        sitemap_path = 'folder/citemap.json'
-        css_selectors = ['title', 'time', 'text']
+        Just pass a site name
         """
         self.site = site
-        self.sitemap = sitemap_path
+        self.sitemap = f'sitemaps/news_{site}.json'
         with open('settings.json') as f:
             site = json.load(f)[self.site]
             self.css_selectors = site['css']
@@ -57,6 +56,5 @@ class Scraper:
 
 # TODO: make script executable from terminal and sys.args
 
-news = Scraper('5tv.ru', 'news_db/news_5tv.json',
-               ['.fsHeader1Alt', 'time', '#article_body p'])
+news = Scraper('5tv')
 news.parse()
