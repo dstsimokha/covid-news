@@ -28,8 +28,9 @@ class Scraper:
         with open(self.sitemap) as f:
             self.urls = json.load(f)['url']
 
-    def _clean_news(self, title, time, text):
-        pass
+    def _clean_article(self, name, block):
+        # TODO: take cleaning techniques from settings
+        return eval(self.cleaning_tools[name])
 
     def _get_article(self, soup):
         """
@@ -37,16 +38,15 @@ class Scraper:
         Restoring Unicode spaces with replace(u'\xa0', u' ')
         For time block: remove '\n' and get only date
         """
-        # TODO: move all cleaning to _clean_news()
         # Deriving title
         title = soup.select(self.css_selectors['title'])
-        title = title[0].get_text().replace(u'\xa0', u' ')
+        title = self._clean_article('title', title)
         # Then time
         time = soup.select(self.css_selectors['time'])
-        time = time[0].get_text().replace('\n', '').split(',')[0]
+        time = self._clean_article('time', time)
         # Finally, text
         text = soup.select(self.css_selectors['text'])
-        text = ' '.join([i.get_text().replace(u'\xa0', u' ') for i in text])
+        text = self._clean_article('text', text)
         return {'time': time, 'title': title, 'text': text}
 
     def _save_article(self, article):
@@ -81,10 +81,16 @@ class Scraper:
         """
         self._load_urls()
         self._create_csv()
-        with parallel_backend("loky", n_jobs=-1):
-            with Parallel(verbose=0) as parallel:
-                parallel(delayed(self._parse)(url)
-                         for url in tqdm(self.urls.values()))
+        try:
+            with parallel_backend("loky", n_jobs=1):
+                with Parallel(verbose=0) as parallel:
+                    parallel(delayed(self._parse)(url)
+                             for url in tqdm(self.urls.values()))
+        except requests.exceptions.ConnectionError:
+            # TODO: deal with this error
+            pass
+        finally:
+            del parallel
 
     def test_parse(self):
         self._load_urls()
