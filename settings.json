@@ -8,7 +8,7 @@
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ')",
             "time": "block[0].get_text().replace('\\n', '').split(',')[0]",
-            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', '') for i in block])"
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
         }
     },
     "meduza": {
@@ -17,15 +17,23 @@
             "time": ".Timestamp-module_root__coOvT",
             "text": ".GeneralMaterial-article"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ')",
+            "time": "block[0].get_text().replace('\\n', '').split(', ')[1]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "currenttime": {
         "css": {
             "title": "#content .pg-title",
             "time": "time",
-            "text": ".content-offset"
+            "text": "#article-content p"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(' года')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "kp": {
         "css": {

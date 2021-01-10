@@ -118,11 +118,12 @@ class Scraper:
             del parallel
 
     def test_parse(self):
+        self._create_csv()
         self._load_urls()
-        test = self.urls[0]
-        r = requests.get(test)
+        self.url = self.urls[0]
+        r = requests.get(self.url)
         soup = BeautifulSoup(r.text, 'html.parser')
-        article = self._get_news(soup)
+        article = self._get_article(soup)
         self.title = article['title']
         self.time = article['time']
         self.text = article['text']
