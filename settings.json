@@ -10,5 +10,93 @@
             "time": "block[0].get_text().replace('\\n', '').split(',')[0]",
             "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', '') for i in block])"
         }
+    },
+    "meduza": {
+        "css": {
+            "title": ".SimpleTitle-module_root__2jVQN",
+            "time": ".Timestamp-module_root__coOvT",
+            "text": ".GeneralMaterial-article"
+        },
+        "clean": {}
+    },
+    "currenttime": {
+        "css": {
+            "title": "#content .pg-title",
+            "time": "time",
+            "text": ".content-offset"
+        },
+        "clean": {}
+    },
+    "kp": {
+        "css": {
+            "title": ".hwlWxA",
+            "time": ".dAWQph",
+            "text": ".eGUIAS"
+        },
+        "clean": {}
+    },
+    "mediazona": {
+        "css": {
+            "title": ".mz-publish__title",
+            "time": ".mz-publish-meta__group:nth-child(1) .mz-publish-meta__item",
+            "text": ".mz-publish__text p"
+        },
+        "clean": {}
+    },
+    "novaya": {
+        "css": {
+            "title": ".Y5rDs",
+            "time": "._3eSy7",
+            "text": "#selection-range-available p"
+        },
+        "clean": {}
+    },
+    "ria": {
+        "css": {
+            "title": ".article__title",
+            "time": ".article__info-date a",
+            "text": ".mia-analytics"
+        },
+        "clean": {}
+    },
+    "russia_today": {
+        "css": {
+            "title": ".article__heading_article-page",
+            "time": ".date",
+            "text": ".js-mediator-article"
+        },
+        "clean": {}
+    },
+    "svpressa": {
+        "css": {
+            "title": ".b-text__title",
+            "time": ".b-text__date",
+            "text": ".b-text__content"
+        },
+        "clean": {}
+    },
+    "tass": {
+        "css": {
+            "title": ".news-header__title",
+            "time": "#news .ng-binding",
+            "text": "p"
+        },
+        "clean": {}
+    },
+    "tvrain": {
+        "css": {
+            "title": "h1",
+            "time": ".document-head__date",
+            "text": "#article_content_text p"
+        },
+        "clean": {}
+    },
+    "vesti_db": {
+        "css": {
+            "title": ".content__holder:nth-child(1) .article__title",
+            "time": ".content__holder:nth-child(1) .article__date",
+            "text": ".content__holder:nth-child(1) .article__text"
+        },
+        "clean": {}
     }
 }
