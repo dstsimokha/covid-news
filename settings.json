@@ -37,11 +37,15 @@
     },
     "kp": {
         "css": {
-            "title": ".hwlWxA",
-            "time": ".dAWQph",
-            "text": ".eGUIAS"
+            "title": "h1",
+            "time": "time",
+            "text": "p"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(' года')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "mediazona": {
         "css": {
