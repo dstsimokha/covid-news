@@ -1,3 +1,4 @@
+import os
 import csv
 import sys
 import json
@@ -71,12 +72,13 @@ class Scraper:
         """
         Create .csv database in it's not exists
         """
-        try:
+        if os.path.exists(f'news/{self.site}.csv'):
+            pass
+        else:
             with open(f'news/{self.site}.csv', 'w', newline='') as f:
+                print('kek')
                 writer = csv.DictWriter(f, self.fieldnames)
                 writer.writeheader()
-        except FileExistsError:
-            pass
 
     def _parse(self, url):
         """
