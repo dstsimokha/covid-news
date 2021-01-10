@@ -76,7 +76,6 @@ class Scraper:
             pass
         else:
             with open(f'news/{self.site}.csv', 'w', newline='') as f:
-                print('kek')
                 writer = csv.DictWriter(f, self.fieldnames)
                 writer.writeheader()
 
@@ -105,8 +104,8 @@ class Scraper:
         """
         For quicker parsing using all CPUs
         """
-        self._load_urls()
         self._create_csv()
+        self._load_urls()
         try:
             with parallel_backend("loky", n_jobs=-1):
                 with Parallel(verbose=0) as parallel:

@@ -8,7 +8,7 @@
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ')",
             "time": "block[0].get_text().replace('\\n', '').split(',')[0]",
-            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ') for i in block])"
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', '') for i in block])"
         }
     }
 }
