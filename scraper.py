@@ -25,18 +25,28 @@ class Scraper:
             self.cleaning_tools = site['clean']
 
     def _load_urls(self):
+        """
+        Sitemap's urls compared to already scraped ones
+        Parsing only new ones
+        """
         with open(self.sitemap) as f:
-            self.urls = json.load(f)['url']
+            all_urls = json.load(f)['url']
+            all_urls = list(all_urls.values())
+        with open(f'news/{self.site}.csv', 'r') as f:
+            lines = f.readlines()
+            parsed_urls = [line.split(',')[0] for line in lines]
+        self.urls = [url for url in all_urls if url not in parsed_urls]
 
     def _clean_article(self, name, block):
-        # TODO: take cleaning techniques from settings
+        """
+        Apply cleaning techniques per specific article block
+        from settings.json
+        """
         return eval(self.cleaning_tools[name])
 
     def _get_article(self, soup):
         """
-        Removing html tags with get_text()
-        Restoring Unicode spaces with replace(u'\xa0', u' ')
-        For time block: remove '\n' and get only date
+        Get article block by CSS selector
         """
         # Deriving title
         title = soup.select(self.css_selectors['title'])
@@ -50,11 +60,17 @@ class Scraper:
         return {'time': time, 'title': title, 'text': text}
 
     def _save_article(self, article):
+        """
+        Write article to .csv database
+        """
         with open(f'news/{self.site}.csv', 'a') as f:
             writer = csv.DictWriter(f, self.fieldnames)
             writer.writerow(article)
 
     def _create_csv(self):
+        """
+        Create .csv database in it's not exists
+        """
         try:
             with open(f'news/{self.site}.csv', 'w', newline='') as f:
                 writer = csv.DictWriter(f, self.fieldnames)
@@ -63,6 +79,14 @@ class Scraper:
             pass
 
     def _parse(self, url):
+        """
+        True parsing function:
+            - get html
+            - check status code
+            - parse text
+            - construct article
+            - save article to .csv
+        """
         try:
             r = requests.get(url)
             if r.status_code != 200:
@@ -82,19 +106,19 @@ class Scraper:
         self._load_urls()
         self._create_csv()
         try:
-            with parallel_backend("loky", n_jobs=1):
+            with parallel_backend("loky", n_jobs=-1):
                 with Parallel(verbose=0) as parallel:
                     parallel(delayed(self._parse)(url)
-                             for url in tqdm(self.urls.values()))
+                             for url in tqdm(self.urls))
         except requests.exceptions.ConnectionError:
-            # TODO: deal with this error
             pass
         finally:
+            # important to delete parallel workers to free ram
             del parallel
 
     def test_parse(self):
         self._load_urls()
-        test = list(self.urls.values())[0]  # TODO: change to random element
+        test = self.urls[0]
         r = requests.get(test)
         soup = BeautifulSoup(r.text, 'html.parser')
         article = self._get_news(soup)
