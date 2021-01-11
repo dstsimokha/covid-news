@@ -90,8 +90,6 @@ class Scraper:
         """
         try:
             r = requests.get(url)
-            if r.status_code != 200:
-                raise IndexError
             article = {'url': url}
             soup = BeautifulSoup(r.text, 'html.parser')
             content = self._get_article(soup)
@@ -111,8 +109,6 @@ class Scraper:
                 with Parallel(verbose=0) as parallel:
                     parallel(delayed(self._parse)(url)
                              for url in tqdm(self.urls))
-        except requests.exceptions.ConnectionError:
-            pass
         finally:
             # important to delete parallel workers to free ram
             del parallel
