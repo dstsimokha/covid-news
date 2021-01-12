@@ -49,16 +49,15 @@ class Scraper:
         """
         Get article block by CSS selector
         """
-        # Deriving title
-        title = soup.select(self.css_selectors['title'])
-        title = self._clean_article('title', title)
-        # Then time
-        time = soup.select(self.css_selectors['time'])
-        time = self._clean_article('time', time)
-        # Finally, text
-        text = soup.select(self.css_selectors['text'])
-        text = self._clean_article('text', text)
-        return {'time': time, 'title': title, 'text': text}
+        article = {
+            'time': self._clean_article(
+                'time', soup.select(self.css_selectors['time'])),
+            'title': self._clean_article(
+                'title', soup.select(self.css_selectors['title'])),
+            'text': self._clean_article(
+                'text', soup.select(self.css_selectors['text']))
+        }
+        return article
 
     def _save_article(self, article):
         """
