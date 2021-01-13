@@ -1,1 +1,5 @@
-*.csv
+news/
+env/
+__pycache__
+vsc.code-workspace
+.vscode
