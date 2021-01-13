@@ -36,7 +36,8 @@ class Scraper:
         with open(f'news/{self.site}.csv', 'r') as f:
             lines = f.readlines()
             parsed_urls = [line.split(',')[0] for line in lines]
-        self.urls = [url for url in all_urls if url not in parsed_urls]
+        print('Check remaining URLs:')
+        self.urls = [url for url in tqdm(all_urls) if url not in parsed_urls]
 
     def _clean_article(self, name, block):
         """
@@ -103,6 +104,7 @@ class Scraper:
         """
         self._create_csv()
         self._load_urls()
+        print('Parse URLs:')
         try:
             with parallel_backend("loky", n_jobs=-1):
                 with Parallel(verbose=0) as parallel:
