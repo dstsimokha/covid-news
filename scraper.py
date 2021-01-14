@@ -2,10 +2,26 @@ import os
 import csv
 import sys
 import json
+import time
 import requests
+import numpy as np
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 from joblib import Parallel, delayed, parallel_backend
+
+headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) ' +
+                      'Gecko/20100101 Firefox/84.0',
+        'referrer': 'https://yandex.ru',
+    }
+
+
+def delayer(func):
+    def wrapped(*args, **kwargs):
+        delay = np.random.choice([3, 5, 7, 9])
+        time.sleep(delay)
+        return func(*args, **kwargs)
+    return wrapped
 
 
 class Scraper:
@@ -13,10 +29,11 @@ class Scraper:
     Helps to parse news from chosen source
     """
 
-    def __init__(self, site):
+    def __init__(self, site, options):
         """
         Just pass a site name
         """
+        self.options = opts
         self.site = site
         self.sitemap = f'sitemaps/news_{site}.json'
         self.fieldnames = ['url', 'time', 'title', 'text']
@@ -50,6 +67,10 @@ class Scraper:
         """
         Get article block by CSS selector
         """
+        if '--test' in self.options:
+            print(soup.select(self.css_selectors['time']))
+            print(soup.select(self.css_selectors['title']))
+            print(soup.select(self.css_selectors['text']))
         article = {
             'time': self._clean_article(
                 'time', soup.select(self.css_selectors['time'])),
@@ -79,6 +100,11 @@ class Scraper:
                 writer = csv.DictWriter(f, self.fieldnames)
                 writer.writeheader()
 
+    @delayer
+    def _get_html(self, url):
+        r = requests.get(url, headers=headers)
+        return r
+
     def _parse(self, url):
         """
         True parsing function:
@@ -89,7 +115,7 @@ class Scraper:
             - save article to .csv
         """
         try:
-            r = requests.get(url)
+            r = self._get_html(url)
             article = {'url': url}
             soup = BeautifulSoup(r.text, 'html.parser')
             content = self._get_article(soup)
@@ -131,5 +157,9 @@ class Scraper:
 
 
 if __name__ == '__main__':
-    news = Scraper(sys.argv[1])
-    news.parallel_parse()
+    opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
+    args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
+    for site in args:
+        news = Scraper(site, opts)
+    news.test_parse() if '--test' in opts else news.parallel_parse()
+# TODO: novaya, tass, russia_today

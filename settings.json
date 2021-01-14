@@ -61,9 +61,9 @@
     },
     "novaya": {
         "css": {
-            "title": "h1",
-            "time": "time",
-            "text": "#selection-range-available p"
+            "title": ".Y5rDs",
+            "time": "._3eSy7",
+            "text": "p"
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -85,9 +85,9 @@
     },
     "russia_today": {
         "css": {
-            "title": ".article__heading_article-page",
+            "title": ".article__heading",
             "time": ".date",
-            "text": ".js-mediator-article"
+            "text": ".article__text_article-page"
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
