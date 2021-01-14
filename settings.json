@@ -50,26 +50,38 @@
     "mediazona": {
         "css": {
             "title": ".mz-publish__title",
-            "time": ".mz-publish-meta__group:nth-child(1) .mz-publish-meta__item",
+            "time": ".mz-publish-meta__item",
             "text": ".mz-publish__text p"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "novaya": {
         "css": {
-            "title": ".Y5rDs",
-            "time": "._3eSy7",
+            "title": "h1",
+            "time": "time",
             "text": "#selection-range-available p"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(' ')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "ria": {
         "css": {
             "title": ".article__title",
             "time": ".article__info-date a",
-            "text": ".mia-analytics"
+            "text": ".article__text"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(' ')[1]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "russia_today": {
         "css": {
@@ -77,7 +89,11 @@
             "time": ".date",
             "text": ".js-mediator-article"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "svpressa": {
         "css": {
@@ -85,7 +101,11 @@
             "time": ".b-text__date",
             "text": ".b-text__content"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "' '.join(block[0].get_text().replace('\\n', '').split(' ')[0:3])",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block]).split(' Новости мира')[0]"
+        }
     },
     "tass": {
         "css": {
@@ -93,7 +113,11 @@
             "time": "#news .ng-binding",
             "text": "p"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "tvrain": {
         "css": {
@@ -101,7 +125,11 @@
             "time": ".document-head__date",
             "text": "#article_content_text p"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     },
     "vesti_db": {
         "css": {
@@ -109,6 +137,10 @@
             "time": ".content__holder:nth-child(1) .article__date",
             "text": ".content__holder:nth-child(1) .article__text"
         },
-        "clean": {}
+        "clean": {
+            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
+            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+        }
     }
 }

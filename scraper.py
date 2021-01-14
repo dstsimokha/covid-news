@@ -118,12 +118,16 @@ class Scraper:
         self._create_csv()
         self._load_urls()
         self.url = self.urls[0]
+        print('URL', self.url)
         r = requests.get(self.url)
         soup = BeautifulSoup(r.text, 'html.parser')
         article = self._get_article(soup)
         self.title = article['title']
+        print('TITLE', self.title)
         self.time = article['time']
+        print('TIME', self.time)
         self.text = article['text']
+        print('TEXT', self.text)
 
 
 if __name__ == '__main__':
