@@ -110,7 +110,7 @@
     "tass": {
         "css": {
             "title": ".news-header__title",
-            "time": "#news .ng-binding",
+            "time": "news-header__date",
             "text": "p"
         },
         "clean": {
@@ -123,7 +123,7 @@
         "css": {
             "title": "h1",
             "time": ".document-head__date",
-            "text": "#article_content_text p"
+            "text": "p"
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -139,7 +139,7 @@
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
-            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "time": "' '.join(block[0].get_text().replace('\\n', '').split(' ')[0:3])",
             "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
         }
     }

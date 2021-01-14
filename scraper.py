@@ -162,4 +162,3 @@ if __name__ == '__main__':
     for site in args:
         news = Scraper(site, opts)
     news.test_parse() if '--test' in opts else news.parallel_parse()
-# TODO: novaya, tass, russia_today
