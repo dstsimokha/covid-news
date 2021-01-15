@@ -18,7 +18,7 @@ headers = {
 
 def delayer(func):
     def wrapped(*args, **kwargs):
-        delay = np.random.choice([3, 5, 7, 9])
+        delay = np.random.choice([0.5, 1, 2])
         time.sleep(delay)
         return func(*args, **kwargs)
     return wrapped

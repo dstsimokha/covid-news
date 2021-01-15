@@ -1,3 +1,5 @@
 # TODO: parse correctly: novaya, tass, russia_today
 
 # TODO: unify time by preprocessing in cleaning
+
+# TODO: get residual urls = all - parsed
