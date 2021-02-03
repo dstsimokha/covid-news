@@ -62,7 +62,7 @@
     "novaya": {
         "css": {
             "title": "#h1",
-            "time": "#\\._3eSy7",
+            "time": "._3esy7",
             "text": "p"
         },
         "clean": {
@@ -85,13 +85,13 @@
     },
     "russia_today": {
         "css": {
-            "title": ".main-page-heading__title",
-            "time": ".main-page-heading__date",
-            "text": "p"
+            "title": ["h1"],
+            "time": ["meta", {"name": "mediator_published_time"}],
+            "text": ["div", "article__text"]
         },
         "clean": {
-            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
-            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "title": "block[0].get_text().strip()",
+            "time": "block[0]['content'].split('T')[0]",
             "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
         }
     },

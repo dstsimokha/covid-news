@@ -67,17 +67,13 @@ class Scraper:
         """
         Get article block by CSS selector
         """
-        if '--test' in self.options:
-            print(soup.select(self.css_selectors['title']))
-            print(soup.select(self.css_selectors['time']))
-            print(soup.select(self.css_selectors['text']))
         article = {
-            'time': self._clean_article(
-                'time', soup.select(self.css_selectors['time'])),
             'title': self._clean_article(
-                'title', soup.select(self.css_selectors['title'])),
+                'title', soup.find_all(*self.css_selectors['title'])),
+            'time': self._clean_article(
+                'time', soup.find_all(*self.css_selectors['time'])),
             'text': self._clean_article(
-                'text', soup.select(self.css_selectors['text']))
+                'text', soup.find_all(*self.css_selectors['text']))
         }
         return article
 
@@ -147,7 +143,12 @@ class Scraper:
         print('URL', self.url)
         r = requests.get(self.url)
         soup = BeautifulSoup(r.text, 'html.parser')
+        # Print before cleaning
+        print(soup.find_all(*self.css_selectors['title']))
+        print(soup.find_all(*self.css_selectors['time']))
+        print(soup.find_all(*self.css_selectors['text']))
         article = self._get_article(soup)
+        # Print after cleaning
         self.title = article['title']
         print('TITLE', self.title)
         self.time = article['time']
@@ -162,3 +163,6 @@ if __name__ == '__main__':
     for site in args:
         news = Scraper(site, opts)
     news.test_parse() if '--test' in opts else news.parallel_parse()
+
+
+# https://www.pluralsight.com/guides/web-scraping-with-beautiful-soup
