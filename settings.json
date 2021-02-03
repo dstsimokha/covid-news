@@ -49,8 +49,8 @@
     },
     "mediazona": {
         "css": {
-            "title": ".mz-publish__title",
-            "time": ".mz-publish-meta__item",
+            "title": ".mz-feature-item__header",
+            "time": "div.mz-publish-meta__item:nth-child(2)",
             "text": ".mz-publish__text p"
         },
         "clean": {
@@ -61,8 +61,8 @@
     },
     "novaya": {
         "css": {
-            "title": ".Y5rDs",
-            "time": "._3eSy7",
+            "title": "#h1",
+            "time": "#\\._3eSy7",
             "text": "p"
         },
         "clean": {
@@ -85,9 +85,9 @@
     },
     "russia_today": {
         "css": {
-            "title": ".article__heading",
-            "time": ".date",
-            "text": ".article__text_article-page"
+            "title": ".main-page-heading__title",
+            "time": ".main-page-heading__date",
+            "text": "p"
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -133,9 +133,9 @@
     },
     "vesti_db": {
         "css": {
-            "title": ".content__holder:nth-child(1) .article__title",
-            "time": ".content__holder:nth-child(1) .article__date",
-            "text": ".content__holder:nth-child(1) .article__text"
+            "title": ".article__title",
+            "time": "div.article__date",
+            "text": ".article__text"
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",

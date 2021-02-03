@@ -68,8 +68,8 @@ class Scraper:
         Get article block by CSS selector
         """
         if '--test' in self.options:
-            print(soup.select(self.css_selectors['time']))
             print(soup.select(self.css_selectors['title']))
+            print(soup.select(self.css_selectors['time']))
             print(soup.select(self.css_selectors['text']))
         article = {
             'time': self._clean_article(
