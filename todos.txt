@@ -1,4 +1,4 @@
-# TODO: parse correctly: novaya, russia_today, tass tvrain, vesti_db
+# TODO: parse correctly: novaya, tass, tvrain
 
 # TODO: unify time by preprocessing in cleaning
 

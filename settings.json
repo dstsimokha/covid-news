@@ -1,9 +1,9 @@
 {
     "5tv": {
         "css": {
-            "title": ".fsHeader1Alt",
-            "time": "time",
-            "text": "#article_body p"
+            "title": [".fsHeader1Alt"],
+            "time": ["time"],
+            "text": ["#article_body p"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ')",
@@ -13,9 +13,9 @@
     },
     "meduza": {
         "css": {
-            "title": ".SimpleTitle-module_root__2jVQN",
-            "time": ".Timestamp-module_root__coOvT",
-            "text": ".GeneralMaterial-article"
+            "title": [".SimpleTitle-module_root__2jVQN"],
+            "time": [".Timestamp-module_root__coOvT"],
+            "text": [".GeneralMaterial-article"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ')",
@@ -25,9 +25,9 @@
     },
     "currenttime": {
         "css": {
-            "title": "#content .pg-title",
-            "time": "time",
-            "text": "#article-content p"
+            "title": ["#content .pg-title"],
+            "time": ["time"],
+            "text": ["#article-content p"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -37,9 +37,9 @@
     },
     "kp": {
         "css": {
-            "title": "h1",
-            "time": "time",
-            "text": "p"
+            "title": ["h1"],
+            "time": ["time"],
+            "text": ["p"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -49,9 +49,9 @@
     },
     "mediazona": {
         "css": {
-            "title": ".mz-feature-item__header",
-            "time": "div.mz-publish-meta__item:nth-child(2)",
-            "text": ".mz-publish__text p"
+            "title": [".mz-feature-item__header"],
+            "time": ["div.mz-publish-meta__item:nth-child(2)"],
+            "text": [".mz-publish__text p"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -61,9 +61,9 @@
     },
     "novaya": {
         "css": {
-            "title": "#h1",
-            "time": "._3esy7",
-            "text": "p"
+            "title": ["#h1"],
+            "time": ["._3esy7"],
+            "text": ["p"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -73,9 +73,9 @@
     },
     "ria": {
         "css": {
-            "title": ".article__title",
-            "time": ".article__info-date a",
-            "text": ".article__text"
+            "title": [".article__title"],
+            "time": [".article__info-date a"],
+            "text": [".article__text"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -97,9 +97,9 @@
     },
     "svpressa": {
         "css": {
-            "title": ".b-text__title",
-            "time": ".b-text__date",
-            "text": ".b-text__content"
+            "title": [".b-text__title"],
+            "time": [".b-text__date"],
+            "text": [".b-text__content"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -109,9 +109,9 @@
     },
     "tass": {
         "css": {
-            "title": ".news-header__title",
-            "time": "news-header__date",
-            "text": "p"
+            "title": ["h1", "news-header__title"],
+            "time": ["span", "news-header__date-date"],
+            "text": ["p"]
         },
         "clean": {
             "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
@@ -121,26 +121,26 @@
     },
     "tvrain": {
         "css": {
-            "title": "h1",
-            "time": ".document-head__date",
-            "text": "p"
+            "title": ["h1"],
+            "time": ["span", "document-head__date"],
+            "text": ["p"]
         },
         "clean": {
-            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
-            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
+            "title": "block[0].get_text()",
+            "time": "block[0].get_text().replace('\n', '').replace('\t', '')",
             "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
         }
     },
     "vesti_db": {
         "css": {
-            "title": ".article__title",
-            "time": "div.article__date",
-            "text": ".article__text"
+            "title": ["h1", "article__title"],
+            "time": ["div", "article__date"],
+            "text": ["div", "js-mediator-article"]
         },
         "clean": {
-            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
-            "time": "' '.join(block[0].get_text().replace('\\n', '').split(' ')[0:3])",
-            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+            "title": "block[0].get_text()",
+            "time": "block[0].get_text().split('\\n')[1].strip()",
+            "text": "block[0].get_text().strip().replace('\\n', '')"
         }
     }
 }

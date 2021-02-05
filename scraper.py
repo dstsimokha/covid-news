@@ -4,6 +4,8 @@ import sys
 import json
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import numpy as np
 from tqdm import tqdm
 from bs4 import BeautifulSoup
@@ -98,7 +100,14 @@ class Scraper:
 
     @delayer
     def _get_html(self, url):
-        r = requests.get(url, headers=headers)
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        r = session.get(url, headers=headers)#, verify=False)
         return r
 
     def _parse(self, url):
@@ -165,4 +174,5 @@ if __name__ == '__main__':
     news.test_parse() if '--test' in opts else news.parallel_parse()
 
 
+# https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru
 # https://www.pluralsight.com/guides/web-scraping-with-beautiful-soup
