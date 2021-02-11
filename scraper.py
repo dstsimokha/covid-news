@@ -107,7 +107,7 @@ class Scraper:
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
-        r = session.get(url, headers=headers)#, verify=False)
+        r = session.get(url, headers=headers)  # , verify=False)
         return r
 
     def _parse(self, url):
@@ -176,3 +176,4 @@ if __name__ == '__main__':
 
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru
 # https://www.pluralsight.com/guides/web-scraping-with-beautiful-soup
+# https://selenium-python.readthedocs.io/

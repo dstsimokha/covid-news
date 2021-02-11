@@ -3,3 +3,4 @@ env/
 __pycache__
 vsc.code-workspace
 .vscode
+gecko*

@@ -61,8 +61,8 @@
     },
     "novaya": {
         "css": {
-            "title": ["#h1"],
-            "time": ["._3esy7"],
+            "title": ["h1", "Y5rDs"],
+            "time": ["time", "._3esy7"],
             "text": ["p"]
         },
         "clean": {
