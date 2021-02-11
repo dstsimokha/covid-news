@@ -126,7 +126,7 @@ class Scraper:
             content = self._get_article(soup)
             article.update(content)
             self._save_article(article)
-        except IndexError:
+        except (IndexError, requests.exceptions.ConnectionError):
             pass
 
     def parallel_parse(self):

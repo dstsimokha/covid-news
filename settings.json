@@ -110,13 +110,13 @@
     "tass": {
         "css": {
             "title": ["h1", "news-header__title"],
-            "time": ["span", "news-header__date-date"],
-            "text": ["p"]
+            "time": ["dateformat", {"mode": "abs"}],
+            "text": ["div", "text-block"]
         },
         "clean": {
-            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
-            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
-            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+            "title": "block[0].get_text().replace('\\n', '')",
+            "time": "time.strftime('%Y-%m-%d', time.localtime(int(block[0].get('time'))))",
+            "text": "block[0].get_text().replace('\\n', '').split('/ТАСС/. ')[1]"
         }
     },
     "tvrain": {
