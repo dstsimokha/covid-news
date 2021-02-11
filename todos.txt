@@ -1,5 +1,0 @@
-# TODO: parse correctly: novaya, tass, tvrain
-
-# TODO: unify time by preprocessing in cleaning
-
-# TODO: get residual urls = all - parsed

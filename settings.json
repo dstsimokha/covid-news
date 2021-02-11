@@ -49,14 +49,14 @@
     },
     "mediazona": {
         "css": {
-            "title": [".mz-feature-item__header"],
-            "time": ["div.mz-publish-meta__item:nth-child(2)"],
-            "text": [".mz-publish__text p"]
+            "title": ["header", "mz-publish__title"],
+            "time": ["div", "mz-publish-meta__item"],
+            "text": ["section", "mz-publish__text"]
         },
         "clean": {
-            "title": "block[0].get_text().replace(u'\\xa0', u' ').replace('\\n', '')",
-            "time": "block[0].get_text().replace('\\n', '').split(', ')[0]",
-            "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
+            "title": "block[0].get_text()",
+            "time": "block[0].get_text().split(', ')[0]",
+            "text": "' '.join([i.get_text() for i in block])"
         }
     },
     "novaya": {
