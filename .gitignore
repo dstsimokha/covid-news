@@ -4,3 +4,4 @@ __pycache__
 vsc.code-workspace
 .vscode
 gecko*
+*.log

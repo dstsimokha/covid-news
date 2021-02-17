@@ -6,6 +6,7 @@ import time
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from selenium import webdriver
 import numpy as np
 from tqdm import tqdm
 from bs4 import BeautifulSoup
@@ -144,6 +145,22 @@ class Scraper:
         finally:
             # important to delete parallel workers to free ram
             del parallel
+
+    def selenium_parse(self):
+        """
+        For those sources which can not be parsed by requests
+        """
+        self._create_csv()
+        self._load_urls()
+        print('Parse URLs:')
+        # Running 'headless' (silent) browser window to save RAM
+        options = webdriver.FirefoxOptions()
+        options.add_argument('--headless')
+        driver = webdriver.Firefox(options=options)
+        for url in tqdm(self.urls):
+            # go to parse???
+            driver.get(url)
+            driver.find_element_by_class_name("Y5rDs").text
 
     def test_parse(self):
         self._create_csv()
