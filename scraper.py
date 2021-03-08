@@ -32,11 +32,10 @@ class Scraper:
     Helps to parse news from chosen source
     """
 
-    def __init__(self, site, options):
+    def __init__(self, site):
         """
         Just pass a site name
         """
-        self.options = opts
         self.site = site
         self.sitemap = f'sitemaps/news_{site}.json'
         self.fieldnames = ['url', 'time', 'title', 'text']
@@ -158,9 +157,24 @@ class Scraper:
         options.add_argument('--headless')
         driver = webdriver.Firefox(options=options)
         for url in tqdm(self.urls):
-            # go to parse???
-            driver.get(url)
-            driver.find_element_by_class_name("Y5rDs").text
+            try:
+                driver.get(url)
+                article = {'url': url}
+                content = {
+                    'title': self._clean_article(
+                        'title', driver.find_element_by_tag_name(
+                            self.css_selectors['title']).text),
+                    'time': self._clean_article(
+                        'time', driver.find_element_by_tag_name(
+                            self.css_selectors['time']).text),
+                    'text': self._clean_article(
+                        'text', driver.find_elements_by_tag_name(
+                            self.css_selectors['text']))
+                    }
+                article.update(content)
+                self._save_article(article)
+            except IndexError:
+                pass
 
     def test_parse(self):
         self._create_csv()
@@ -187,8 +201,13 @@ if __name__ == '__main__':
     opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
     args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
     for site in args:
-        news = Scraper(site, opts)
-    news.test_parse() if '--test' in opts else news.parallel_parse()
+        news = Scraper(site)
+    if '--test' in opts:
+        news.test_parse()
+    if '--selenium' in opts:
+        news.selenium_parse()
+    else:
+        news.parallel_parse()
 
 
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru
