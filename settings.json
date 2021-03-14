@@ -122,12 +122,12 @@
     "tvrain": {
         "css": {
             "title": ["h1"],
-            "time": ["span", "document-head__date"],
-            "text": ["p"]
+            "time": ["meta", {"property": "article:published_time"}],
+            "text": ["p", {"class": ""}]
         },
         "clean": {
             "title": "block[0].get_text()",
-            "time": "block[0].get_text().replace('\n', '').replace('\t', '')",
+            "time": "block[0]['content'].split('T')[0]",
             "text": "' '.join([i.get_text().replace(u'\\xa0', u' ').replace('\\n', ' ') for i in block])"
         }
     },

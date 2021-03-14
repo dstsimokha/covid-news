@@ -4,6 +4,7 @@ import sys
 import json
 import time
 import requests
+import selenium
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from selenium import webdriver
@@ -160,26 +161,26 @@ class Scraper:
             try:
                 driver.get(url)
                 article = {'url': url}
+                title = driver.find_element_by_tag_name(
+                    self.css_selectors['title']).text
+                time = driver.find_element_by_tag_name(
+                    self.css_selectors['time']).text
+                text = driver.find_elements_by_tag_name(
+                    self.css_selectors['text'])
                 content = {
-                    'title': self._clean_article(
-                        'title', driver.find_element_by_tag_name(
-                            self.css_selectors['title']).text),
-                    'time': self._clean_article(
-                        'time', driver.find_element_by_tag_name(
-                            self.css_selectors['time']).text),
-                    'text': self._clean_article(
-                        'text', driver.find_elements_by_tag_name(
-                            self.css_selectors['text']))
+                    'title': self._clean_article('title', title),
+                    'time': self._clean_article('time', time),
+                    'text': self._clean_article('text', text)
                     }
                 article.update(content)
                 self._save_article(article)
-            except IndexError:
+            except selenium.common.exceptions.NoSuchElementException:
                 pass
 
-    def test_parse(self):
+    def test_parse(self, url):
         self._create_csv()
         self._load_urls()
-        self.url = self.urls[0]
+        self.url = url
         print('URL', self.url)
         r = requests.get(self.url)
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -200,10 +201,10 @@ class Scraper:
 if __name__ == '__main__':
     opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
     args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
-    for site in args:
-        news = Scraper(site)
+    print(args)
+    news = Scraper(args[0])
     if '--test' in opts:
-        news.test_parse()
+        news.test_parse(args[1])
     if '--selenium' in opts:
         news.selenium_parse()
     else:
