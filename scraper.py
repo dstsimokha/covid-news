@@ -4,8 +4,10 @@ import sys
 import json
 import time
 import requests
+import selenium
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from selenium import webdriver
 import numpy as np
 from tqdm import tqdm
 from bs4 import BeautifulSoup
@@ -31,11 +33,10 @@ class Scraper:
     Helps to parse news from chosen source
     """
 
-    def __init__(self, site, options):
+    def __init__(self, site):
         """
         Just pass a site name
         """
-        self.options = opts
         self.site = site
         self.sitemap = f'sitemaps/news_{site}.json'
         self.fieldnames = ['url', 'time', 'title', 'text']
@@ -145,10 +146,41 @@ class Scraper:
             # important to delete parallel workers to free ram
             del parallel
 
-    def test_parse(self):
+    def selenium_parse(self):
+        """
+        For those sources which can not be parsed by requests
+        """
         self._create_csv()
         self._load_urls()
-        self.url = self.urls[0]
+        print('Parse URLs:')
+        # Running 'headless' (silent) browser window to save RAM
+        options = webdriver.FirefoxOptions()
+        options.add_argument('--headless')
+        driver = webdriver.Firefox(options=options)
+        for url in tqdm(self.urls):
+            try:
+                driver.get(url)
+                article = {'url': url}
+                title = driver.find_element_by_tag_name(
+                    self.css_selectors['title']).text
+                time = driver.find_element_by_tag_name(
+                    self.css_selectors['time']).text
+                text = driver.find_elements_by_tag_name(
+                    self.css_selectors['text'])
+                content = {
+                    'title': self._clean_article('title', title),
+                    'time': self._clean_article('time', time),
+                    'text': self._clean_article('text', text)
+                    }
+                article.update(content)
+                self._save_article(article)
+            except selenium.common.exceptions.NoSuchElementException:
+                pass
+
+    def test_parse(self, url):
+        self._create_csv()
+        self._load_urls()
+        self.url = url
         print('URL', self.url)
         r = requests.get(self.url)
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -169,9 +201,14 @@ class Scraper:
 if __name__ == '__main__':
     opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
     args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
-    for site in args:
-        news = Scraper(site, opts)
-    news.test_parse() if '--test' in opts else news.parallel_parse()
+    print(args)
+    news = Scraper(args[0])
+    if '--test' in opts:
+        news.test_parse(args[1])
+    if '--selenium' in opts:
+        news.selenium_parse()
+    else:
+        news.parallel_parse()
 
 
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru
