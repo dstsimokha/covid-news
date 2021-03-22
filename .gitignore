@@ -1,5 +1,6 @@
 news/
 env/
+sitemaps/
 __pycache__
 vsc.code-workspace
 .vscode

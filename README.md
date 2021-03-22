@@ -1,23 +1,14 @@
-# covid-news
-University project on news topic modelling: comparison of pro-governmental an ani-governmental news medias agendas in the pandemic period.
+# News Scraper
+Code for the university project on scraping news for topic modelling.
 
 
-## HOW TO: use for project purposes
-Run all code in Python interpreter and change news media sources's name - that's all.
-
-For all used sites CSS selectors and cleaning techniques are already described in *settings.json* and using automatically.
-
-
-## HOW TO: add new site for loading
-Firstly, you will need to find/gather sitemap: it needs to be in .json format and looks like {"url": {"news_id1": "news_url1", "news_id2": "news_url2", ..., "news_idN": "news_urlN"}}.
-
-Secondly, you will need to add into **settings.json** CSS selectors for news *title*, *time* and *text* blocks - use [SelectorGadget](https://selectorgadget.com/).
-
-Finally, you will need to add into **settings.json** cleaning techniques for news title, time and text blocks - use function **test_parse** to look at output of each block and develop cleaning technique.
-
-
-
-
-## META:
-- Python's virtual environment (venv) in **env**: only necessary packages were loaded and used.
-- This *app* was written in Visual Studio Code: *.vscode* folder is added too
+## How to use
+0. This code helps you to gather *title, time and text* from news without major modifications in itself.
+1. Put all urls in the **sitemaps** folder in **.csv** format with **,** as newline delimeter - first line as a header named 'url', all following lines are just urls.
+2. In the **settings.json** file map:
+    - **css-selectors** for scraping what you want from the site
+    - **cleaning techniques** for deleting html-/css-tags and any other garbage from the text
+3. Set folder with this code as working directory and run `python scraper.py --test sitename url` to test previously mapped css-selectors and cleaning techniques.
+4. After that run `python scraper.py sitename` for basic parsing with *requests* package or `python scraper.py --selenium sitename` for more complex parsing with *selenium* package (will silently run browser window and behaves more like a human - sometimes it helps)
+5. ...
+6. PROFIT

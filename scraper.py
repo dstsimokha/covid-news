@@ -21,6 +21,9 @@ headers = {
 
 
 def delayer(func):
+    """
+    To not get banned from some sites - just waits for ~ a second
+    """
     def wrapped(*args, **kwargs):
         delay = np.random.choice([0.5, 1, 2])
         time.sleep(delay)
@@ -33,26 +36,43 @@ class Scraper:
     Helps to parse news from chosen source
     """
 
-    def __init__(self, site):
+    def __init__(self, sitename):
         """
-        Just pass a site name
+        - takes <sitename> as input
+        - then reads urls from *sitemaps* folder
+          from the file *news_<sitename>.csv*
+        - then reads css-selectors and cleaning
+          techniques from *settings.json* looking
+          for the <sitename> key
         """
-        self.site = site
-        self.sitemap = f'sitemaps/news_{site}.json'
+        self.site = sitename
+        self.sitemap = f'sitemaps/news_{self.site}.csv'
+        self.newsfile = f'news/{self.site}.csv'
         self.fieldnames = ['url', 'time', 'title', 'text']
         with open('settings.json') as f:
             site = json.load(f)[self.site]
             self.css_selectors = site['css']
             self.cleaning_tools = site['clean']
 
+    def _create_csv(self):
+        """
+        Creates .csv file for new news (lol) if it's not exists
+        """
+        if not os.path.exists(self.newsfile):
+            with open(self.newsfile, 'w', newline='') as f:
+                writer = csv.DictWriter(f, self.fieldnames)
+                writer.writeheader()
+
     def _load_urls(self):
         """
-        Sitemap's urls compared to already scraped ones
-        Parsing only new ones
+        Checking already parsed urls
+        Leaves only non-gathered ones
         """
+        all_urls = list()
         with open(self.sitemap) as f:
-            all_urls = json.load(f)['url']
-            all_urls = list(all_urls.values())
+            reader = csv.reader(f, delimiter=",")
+            for row in reader:
+                all_urls.append(row[0])
         with open(f'news/{self.site}.csv', 'r') as f:
             lines = f.readlines()
             parsed_urls = [line.split(',')[0] for line in lines]
@@ -61,14 +81,15 @@ class Scraper:
 
     def _clean_article(self, name, block):
         """
-        Apply cleaning techniques per specific article block
-        from settings.json
+        Apply cleaning techniques per specific
+        article block from settings.json
         """
         return eval(self.cleaning_tools[name])
 
     def _get_article(self, soup):
         """
-        Get article block by CSS selector
+        Get article blocks by their css-selectors
+        Clean derived text with chosen techniques
         """
         article = {
             'title': self._clean_article(
@@ -82,25 +103,17 @@ class Scraper:
 
     def _save_article(self, article):
         """
-        Write article to .csv database
+        Write article to .csv file
         """
-        with open(f'news/{self.site}.csv', 'a') as f:
+        with open(self.newsfile, 'a') as f:
             writer = csv.DictWriter(f, self.fieldnames)
             writer.writerow(article)
 
-    def _create_csv(self):
-        """
-        Create .csv database in it's not exists
-        """
-        if os.path.exists(f'news/{self.site}.csv'):
-            pass
-        else:
-            with open(f'news/{self.site}.csv', 'w', newline='') as f:
-                writer = csv.DictWriter(f, self.fieldnames)
-                writer.writeheader()
-
     @delayer
     def _get_html(self, url):
+        """
+        Get sitepage with requests package
+        """
         session = requests.Session()
         retry = Retry(connect=3, backoff_factor=0.5)
         adapter = HTTPAdapter(max_retries=retry)
@@ -108,17 +121,17 @@ class Scraper:
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
-        r = session.get(url, headers=headers)  # , verify=False)
+        r = session.get(url, headers=headers)
         return r
 
     def _parse(self, url):
         """
-        True parsing function:
-            - get html
-            - check status code
-            - parse text
-            - construct article
-            - save article to .csv
+        Inner parsing func:
+        - get html
+        - check status code
+        - parse text
+        - construct article
+        - save article to .csv file
         """
         try:
             r = self._get_html(url)
@@ -132,7 +145,8 @@ class Scraper:
 
     def parallel_parse(self):
         """
-        For quicker parsing using all CPUs
+        Outer parallel parsing func to run inner parsing func
+        For quicker parsing using all CPUs (*cores go brrrr*)
         """
         self._create_csv()
         self._load_urls()
@@ -148,12 +162,13 @@ class Scraper:
 
     def selenium_parse(self):
         """
-        For those sources which can not be parsed by requests
+        All-in-one selenium parsing func
+        For those sources which can not be parsed by requests package
         """
         self._create_csv()
         self._load_urls()
         print('Parse URLs:')
-        # Running 'headless' (silent) browser window to save RAM
+        # Running 'headless' (silent) Firefox browser window to save RAM
         options = webdriver.FirefoxOptions()
         options.add_argument('--headless')
         driver = webdriver.Firefox(options=options)
@@ -178,10 +193,13 @@ class Scraper:
                 pass
 
     def test_parse(self, url):
-        self._create_csv()
-        self._load_urls()
+        """
+        For testing purposes:
+        - takes one url for parse with requests package
+          and check chosen css-selectors and cleaning techniques
+        """
         self.url = url
-        print('URL', self.url)
+        print(self.url)
         r = requests.get(self.url)
         soup = BeautifulSoup(r.text, 'html.parser')
         # Print before cleaning
@@ -199,15 +217,19 @@ class Scraper:
 
 
 if __name__ == '__main__':
+    # reading options as '--test'
     opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
+    # reading arguments as 'sitename'
     args = [arg for arg in sys.argv[1:] if not arg.startswith("-")]
-    print(args)
     news = Scraper(args[0])
     if '--test' in opts:
+        print('Testing url.')
         news.test_parse(args[1])
-    if '--selenium' in opts:
+    elif '--selenium' in opts:
+        print('Parsing with selenium.')
         news.selenium_parse()
     else:
+        print('Usial parsing.')
         news.parallel_parse()
 
 
